@@ -199,7 +199,8 @@ class ChipMappingMFT
   static constexpr std::int16_t getRUDetectorField() { return 0x0; }
 
   ///< get pattern of lanes on the RU served by a given RU type
-  Int_t getCablesOnRUType(Int_t ruType) const { return (0x1 << NChipsOnRUType[ruType]) - 1; }
+  //Int_t getCablesOnRUType(Int_t ruType) const { return (0x1 << NChipsOnRUType[ruType]) - 1; }
+  Int_t getCablesOnRUType(Int_t ruType) const { return mCablesOnRUType[ruType]; } //For correct active lanes pattern
 
   ///< get info on sw RU
   const RUInfo* getRUInfoSW(int ruSW) const { return &mRUInfo[ruSW]; }
@@ -270,6 +271,8 @@ class ChipMappingMFT
   // info on chips info within the zone (RU)
   std::array<ChipOnRUInfo, NChipsInfo> mChipsInfo;
   Int_t mChipInfoEntryRU[NRUTypes];
+  
+  std::array<int, NRUTypes> mCablesOnRUType = {0}; //For correct active lanes pattern
 
   /// info per zone (RU)
   std::array<RUInfo, NRUs> mRUInfo;
