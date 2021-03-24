@@ -12,6 +12,7 @@
 
 #include "Framework/AnalysisDataModel.h"
 #include "AnalysisCore/RecoDecay.h"
+#include <cmath>
 
 namespace o2::aod
 {
@@ -49,7 +50,7 @@ DECLARE_SOA_DYNAMIC_COLUMN(V0Radius, v0radius, [](float x, float y) { return Rec
 
 //CosPA
 DECLARE_SOA_DYNAMIC_COLUMN(V0CosPA, v0cosPA, [](float X, float Y, float Z, float Px, float Py, float Pz, float pvX, float pvY, float pvZ) { return RecoDecay::CPA(array{pvX, pvY, pvZ}, array{X, Y, Z}, array{Px, Py, Pz}); });
-DECLARE_SOA_DYNAMIC_COLUMN(DCAV0ToPV, dcav0topv, [](float X, float Y, float Z, float Px, float Py, float Pz, float pvX, float pvY, float pvZ) { return TMath::Sqrt((TMath::Power((pvY - Y) * Pz - (pvZ - Z) * Py, 2) + TMath::Power((pvX - X) * Pz - (pvZ - Z) * Px, 2) + TMath::Power((pvX - X) * Py - (pvY - Y) * Px, 2)) / (Px * Px + Py * Py + Pz * Pz)); });
+DECLARE_SOA_DYNAMIC_COLUMN(DCAV0ToPV, dcav0topv, [](float X, float Y, float Z, float Px, float Py, float Pz, float pvX, float pvY, float pvZ) { return std::sqrt((std::pow((pvY - Y) * Pz - (pvZ - Z) * Py, 2) + std::pow((pvX - X) * Pz - (pvZ - Z) * Px, 2) + std::pow((pvX - X) * Py - (pvY - Y) * Px, 2)) / (Px * Px + Py * Py + Pz * Pz)); });
 
 //Calculated on the fly with mass assumption + dynamic tables
 DECLARE_SOA_DYNAMIC_COLUMN(MLambda, mLambda, [](float pxpos, float pypos, float pzpos, float pxneg, float pyneg, float pzneg) { return RecoDecay::M(array{array{pxpos, pypos, pzpos}, array{pxneg, pyneg, pzneg}}, array{RecoDecay::getMassPDG(kProton), RecoDecay::getMassPDG(kPiPlus)}); });
@@ -101,7 +102,7 @@ DECLARE_SOA_INDEX_COLUMN(V0Data, v0Data);
 DECLARE_SOA_INDEX_COLUMN_FULL(Bachelor, bachelor, int, Tracks, "");
 DECLARE_SOA_INDEX_COLUMN(Collision, collision);
 //General V0 properties: position, momentum
-DECLARE_SOA_COLUMN(Charge, charge, int);
+DECLARE_SOA_COLUMN(Sign, sign, int);
 DECLARE_SOA_COLUMN(PxPos, pxpos, float);
 DECLARE_SOA_COLUMN(PyPos, pypos, float);
 DECLARE_SOA_COLUMN(PzPos, pzpos, float);
@@ -136,8 +137,8 @@ DECLARE_SOA_DYNAMIC_COLUMN(CascRadius, cascradius, [](float x, float y) { return
 //CosPAs
 DECLARE_SOA_DYNAMIC_COLUMN(V0CosPA, v0cosPA, [](float Xlambda, float Ylambda, float Zlambda, float PxLambda, float PyLambda, float PzLambda, float pvX, float pvY, float pvZ) { return RecoDecay::CPA(array{pvX, pvY, pvZ}, array{Xlambda, Ylambda, Zlambda}, array{PxLambda, PyLambda, PzLambda}); });
 DECLARE_SOA_DYNAMIC_COLUMN(CascCosPA, casccosPA, [](float X, float Y, float Z, float Px, float Py, float Pz, float pvX, float pvY, float pvZ) { return RecoDecay::CPA(array{pvX, pvY, pvZ}, array{X, Y, Z}, array{Px, Py, Pz}); });
-DECLARE_SOA_DYNAMIC_COLUMN(DCAV0ToPV, dcav0topv, [](float X, float Y, float Z, float Px, float Py, float Pz, float pvX, float pvY, float pvZ) { return TMath::Sqrt((TMath::Power((pvY - Y) * Pz - (pvZ - Z) * Py, 2) + TMath::Power((pvX - X) * Pz - (pvZ - Z) * Px, 2) + TMath::Power((pvX - X) * Py - (pvY - Y) * Px, 2)) / (Px * Px + Py * Py + Pz * Pz)); });
-DECLARE_SOA_DYNAMIC_COLUMN(DCACascToPV, dcacasctopv, [](float X, float Y, float Z, float Px, float Py, float Pz, float pvX, float pvY, float pvZ) { return TMath::Sqrt((TMath::Power((pvY - Y) * Pz - (pvZ - Z) * Py, 2) + TMath::Power((pvX - X) * Pz - (pvZ - Z) * Px, 2) + TMath::Power((pvX - X) * Py - (pvY - Y) * Px, 2)) / (Px * Px + Py * Py + Pz * Pz)); });
+DECLARE_SOA_DYNAMIC_COLUMN(DCAV0ToPV, dcav0topv, [](float X, float Y, float Z, float Px, float Py, float Pz, float pvX, float pvY, float pvZ) { return std::sqrt((std::pow((pvY - Y) * Pz - (pvZ - Z) * Py, 2) + std::pow((pvX - X) * Pz - (pvZ - Z) * Px, 2) + std::pow((pvX - X) * Py - (pvY - Y) * Px, 2)) / (Px * Px + Py * Py + Pz * Pz)); });
+DECLARE_SOA_DYNAMIC_COLUMN(DCACascToPV, dcacasctopv, [](float X, float Y, float Z, float Px, float Py, float Pz, float pvX, float pvY, float pvZ) { return std::sqrt((std::pow((pvY - Y) * Pz - (pvZ - Z) * Py, 2) + std::pow((pvX - X) * Pz - (pvZ - Z) * Px, 2) + std::pow((pvX - X) * Py - (pvY - Y) * Px, 2)) / (Px * Px + Py * Py + Pz * Pz)); });
 
 //Calculated on the fly with mass assumption + dynamic tables
 DECLARE_SOA_DYNAMIC_COLUMN(MLambda, mLambda, [](int charge, float pxpos, float pypos, float pzpos, float pxneg, float pyneg, float pzneg) { return RecoDecay::M(array{array{pxpos, pypos, pzpos}, array{pxneg, pyneg, pzneg}}, charge < 0 ? array{RecoDecay::getMassPDG(kProton), RecoDecay::getMassPDG(kPiPlus)} : array{RecoDecay::getMassPDG(kPiPlus), RecoDecay::getMassPDG(kProton)}); });
@@ -164,7 +165,7 @@ DECLARE_SOA_EXPRESSION_COLUMN(Pz, pz, float, 1.f * aod::cascdata::pzpos + 1.f * 
 DECLARE_SOA_TABLE(CascData, "AOD", "CASCDATA",
                   o2::soa::Index<>, cascdata::V0DataId, cascdata::BachelorId, cascdata::CollisionId,
 
-                  cascdata::Charge,
+                  cascdata::Sign,
                   cascdata::X, cascdata::Y, cascdata::Z,
                   cascdata::Xlambda, cascdata::Ylambda, cascdata::Zlambda,
                   cascdata::PxPos, cascdata::PyPos, cascdata::PzPos,
@@ -183,7 +184,7 @@ DECLARE_SOA_TABLE(CascData, "AOD", "CASCDATA",
                   cascdata::DCACascToPV<cascdata::X, cascdata::Y, cascdata::Z, cascdataext::Px, cascdataext::Py, cascdataext::Pz>,
 
                   //Invariant masses
-                  cascdata::MLambda<cascdata::Charge, cascdata::PxPos, cascdata::PyPos, cascdata::PzPos, cascdata::PxNeg, cascdata::PyNeg, cascdata::PzNeg>,
+                  cascdata::MLambda<cascdata::Sign, cascdata::PxPos, cascdata::PyPos, cascdata::PzPos, cascdata::PxNeg, cascdata::PyNeg, cascdata::PzNeg>,
                   cascdata::MXi<cascdata::PxBach, cascdata::PyBach, cascdata::PzBach, cascdataext::PxLambda, cascdataext::PyLambda, cascdataext::PzLambda>,
                   cascdata::MOmega<cascdata::PxBach, cascdata::PyBach, cascdata::PzBach, cascdataext::PxLambda, cascdataext::PyLambda, cascdataext::PzLambda>,
                   //Longitudinal

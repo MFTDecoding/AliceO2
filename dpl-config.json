@@ -1,0 +1,16 @@
+{
+    "internal-dpl-clock": "",
+    "raw-file-reader": "",
+    "mft-stf-decoder": {
+        "nthreads": "1",
+        "old-format": "false",
+        "decoder-verbosity": "1"
+    },
+    "MFTDigitWriter": {
+        "outfile": "\/local\/home\/mc262512\/alice\/output\/data-2021_03_10__16_59_27__-20491-2.raw.root",
+        "treename": "o2sim",
+        "treetitle": "Digits tree",
+        "nevents": "-1",
+        "terminate": "process"
+    }
+}

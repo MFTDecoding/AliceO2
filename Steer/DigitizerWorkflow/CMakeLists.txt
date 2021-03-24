@@ -36,6 +36,7 @@ o2_add_executable(digitizer-workflow
                                         O2::FT0Simulation
                                         O2::FV0Simulation
                                         O2::FDDSimulation
+					O2::FDDWorkflow
                                         O2::HMPIDSimulation
                                         O2::ITSMFTSimulation
                                         O2::ITSSimulation
@@ -54,7 +55,8 @@ o2_add_executable(digitizer-workflow
                                         O2::TRDSimulation
                                         O2::TRDWorkflow
                                         O2::DataFormatsTRD
-                                        O2::ZDCSimulation)
+                                        O2::ZDCSimulation
+					O2::ZDCWorkflow)
 
 
 o2_add_executable(mctruth-testworkflow

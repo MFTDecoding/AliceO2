@@ -373,7 +373,7 @@ void VarManager::FillTrack(T const& track, float* values)
     }
     values[kEta] = track.eta();
     values[kPhi] = track.phi();
-    values[kCharge] = track.charge();
+    values[kCharge] = track.sign();
   }
 
   if constexpr ((fillMap & TrackExtra) > 0 || (fillMap & ReducedTrackBarrel) > 0) {
@@ -513,18 +513,18 @@ void VarManager::FillDileptonHadron(T1 const& dilepton, T2 const& hadron, float*
   }
   if (fgUsedVars[kDeltaPhi]) {
     double delta = dilepton.phi() - hadron.phi();
-    if (delta > 3.0 / 2.0 * TMath::Pi()) {
-      delta -= 2.0 * TMath::Pi();
+    if (delta > 3.0 / 2.0 * M_PI) {
+      delta -= 2.0 * M_PI;
     }
-    if (delta < -0.5 * TMath::Pi()) {
-      delta += 2.0 * TMath::Pi();
+    if (delta < -0.5 * M_PI) {
+      delta += 2.0 * M_PI;
     }
     values[kDeltaPhi] = delta;
   }
   if (fgUsedVars[kDeltaPhiSym]) {
     double delta = TMath::Abs(dilepton.phi() - hadron.phi());
-    if (delta > TMath::Pi()) {
-      delta = 2 * TMath::Pi() - delta;
+    if (delta > M_PI) {
+      delta = 2 * M_PI - delta;
     }
     values[kDeltaPhiSym] = delta;
   }
