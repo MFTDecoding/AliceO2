@@ -40,13 +40,8 @@ using namespace o2::framework;
 
 ///_______________________________________
 template <class Mapping>
-<<<<<<< HEAD
-STFDecoder<Mapping>::STFDecoder(bool doClusters, bool doPatterns, bool doDigits, std::string_view dict, std::string_view noise, bool writeHW)
-  : mDoClusters(doClusters), mDoPatterns(doPatterns), mDoDigits(doDigits), mDictName(dict), mNoiseName(noise), mWriteHW(writeHW)
-=======
 STFDecoder<Mapping>::STFDecoder(bool doClusters, bool doPatterns, bool doDigits, bool doCalib, std::string_view dict, std::string_view noise)
   : mDoClusters(doClusters), mDoPatterns(doPatterns), mDoDigits(doDigits), mDoCalibData(doCalib), mDictName(dict), mNoiseName(noise)
->>>>>>> da5dc64b44fe2b16e364ca405744aab1e11aaa75
 {
   mSelfName = o2::utils::concat_string(Mapping::getName(), "STFDecoder");
   mTimer.Stop();

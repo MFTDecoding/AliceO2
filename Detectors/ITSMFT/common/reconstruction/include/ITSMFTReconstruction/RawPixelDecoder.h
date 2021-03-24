@@ -63,8 +63,8 @@ class RawPixelDecoder final : public PixelReader
   template <class DigitContainer, class ROFContainer>
   int fillDecodedDigits(DigitContainer& digits, ROFContainer& rofs);
 
-  template <class DigitContainer, class ROFContainer>
-  int fillDecodedDigitsHW(DigitContainer& digits, ROFContainer& rofs);
+  template <class CalibContainer>
+  void fillCalibData(CalibContainer& calib);
 
   const RUDecodeData* getRUDecode(int ruSW) const { return mRUEntry[ruSW] < 0 ? nullptr : &mRUDecodeVec[mRUEntry[ruSW]]; }
   const GBTLink* getGBTLink(int i) const { return i < 0 ? nullptr : &mGBTLinks[i]; }
@@ -78,6 +78,9 @@ class RawPixelDecoder final : public PixelReader
 
   void setNThreads(int n);
   int getNThreads() const { return mNThreads; }
+
+  void setFillCalibData(bool v) { mFillCalibData = v; }
+  bool getFillCalibData() const { return mFillCalibData; }
 
   void setVerbosity(int v);
   int getVerbosity() const { return mVerbosity; }
@@ -117,6 +120,7 @@ class RawPixelDecoder final : public PixelReader
   uint16_t mCurRUDecodeID = NORUDECODED;        // index of currently processed RUDecode container
   int mLastReadChipID = -1;                     // chip ID returned by previous getNextChipData call, used for ordering checks
   Mapping mMAP;                                 // chip mapping
+  bool mFillCalibData = false;                  // request to fill calib data from GBT
   int mVerbosity = 0;
   int mNThreads = 1; // number of decoding threads
   GBTLink::Format mFormat = GBTLink::NewFormat; // ITS Data Format (old: 1 ROF per CRU page)
@@ -159,35 +163,19 @@ int RawPixelDecoder<Mapping>::fillDecodedDigits(DigitContainer& digits, ROFConta
   return nFilled;
 }
 
+///______________________________________________________________
+/// Fill decoded digits to global vector
 template <class Mapping>
-template <class DigitContainer, class ROFContainer>
-int RawPixelDecoder<Mapping>::fillDecodedDigitsHW(DigitContainer& digits, ROFContainer& rofs)
+template <class CalibContainer>
+void RawPixelDecoder<Mapping>::fillCalibData(CalibContainer& calib)
 {
-  if (mInteractionRecord.isDummy()) {
-    return 0; // nothing was decoded
-  }
-  mTimerFetchData.Start(false);
-  int ref = digits.size();
-  for (unsigned int iru = 0; iru < mRUDecodeVec.size(); iru++) {
-    uint16_t calcounter = mRUDecodeVec[iru].calCount;
-    uint16_t ninjection = mRUDecodeVec[iru].nInj;
-    uint16_t chargeinjected = mRUDecodeVec[iru].chargeInj;
-    uint16_t feeID = mMAP.RUSW2FEEId(mRUDecodeVec[iru].ruSWID, 0);
-    uint16_t half = (feeID >> 6) & 0x1;
-    uint16_t disk = (feeID >> 3) & 0x7;
-    uint16_t plane = (feeID >> 2) & 0x1;
-    uint16_t zone = feeID & 0x3;
-    for (int ic = 0; ic < mRUDecodeVec[iru].nChipsFired; ic++) {
-      const auto& chip = mRUDecodeVec[iru].chipsData[ic];
-      for (const auto& hit : mRUDecodeVec[iru].chipsData[ic].getData()) {
-        digits.emplace_back(calcounter, ninjection, chargeinjected, half, disk, plane, zone, chip.getCableHW(), chip.getChipID(), hit.getRow(), hit.getCol());
-      }
+  if (!mInteractionRecord.isDummy()) {
+    auto curSize = calib.size();
+    calib.resize(curSize + Mapping::getNRUs());
+    for (unsigned int iru = 0; iru < mRUDecodeVec.size(); iru++) {
+      calib[curSize + mRUDecodeVec[iru].ruSWID] = mRUDecodeVec[iru].calibData;
     }
   }
-  int nFilled = digits.size() - ref;
-  rofs.emplace_back(mInteractionRecord, mROFCounter, ref, nFilled);
-  mTimerFetchData.Stop();
-  return nFilled;
 }
 
 using RawDecoderITS = RawPixelDecoder<ChipMappingITS>;
