@@ -112,12 +112,12 @@ void STFDecoder<Mapping>::run(ProcessingContext& pc)
   std::vector<o2::itsmft::CompClusterExt> clusCompVec;
   std::vector<o2::itsmft::ROFRecord> clusROFVec;
   std::vector<unsigned char> clusPattVec;
-  /*
+  
   std::vector<Digit> digVec;
-  std::vector<GBTCalibData> calibVec;
+  std::vector<GBTCalibData> calVec;
   std::vector<ROFRecord> digROFVec;
-*/
-  std::optional<std::reference_wrapper<std::decay_t<decltype(pc.outputs().make<std::vector<Digit>>(Output{"xxx", "xxx"}))>>> digVec;
+
+/*  std::optional<std::reference_wrapper<std::decay_t<decltype(pc.outputs().make<std::vector<Digit>>(Output{"xxx", "xxx"}))>>> digVec;
   std::optional<std::reference_wrapper<std::decay_t<decltype(pc.outputs().make<std::vector<ROFRecord>>(Output{"xxx", "xxx"}))>>> digROFVec;
   std::optional<std::reference_wrapper<std::decay_t<decltype(pc.outputs().make<std::vector<GBTCalibData>>(Output{"xxx", "xxx"}))>>> calVec;
   if (mDoDigits) {
@@ -127,13 +127,15 @@ void STFDecoder<Mapping>::run(ProcessingContext& pc)
       calVec.emplace( pc.outputs().make<std::vector<GBTCalibData>>(Output{orig, "GBTCALIB", 0, Lifetime::Timeframe}) );
     }
   }
-
+*/
   mDecoder->setDecodeNextAuto(false);
   while (mDecoder->decodeNextTrigger()) {
     if (mDoDigits) {                                    // call before clusterization, since the latter will hide the digits
-      mDecoder->fillDecodedDigits(digVec->get(), digROFVec->get()); // lot of copying involved
+//      mDecoder->fillDecodedDigits(digVec->get(), digROFVec->get()); // lot of copying involved
+      mDecoder->fillDecodedDigits(digVec, digROFVec);
       if (mDoCalibData) {
-        mDecoder->fillCalibData(calVec->get());
+//        mDecoder->fillCalibData(calVec->get());
+        mDecoder->fillCalibData(calVec);
       }
     }
 
@@ -141,16 +143,15 @@ void STFDecoder<Mapping>::run(ProcessingContext& pc)
       mClusterer->process(mNThreads, *mDecoder.get(), &clusCompVec, mDoPatterns ? &clusPattVec : nullptr, &clusROFVec);
     }
   }
-  /*
+ 
   if (mDoDigits) {
-    if (mWriteHW) {
-      pc.outputs().snapshot(Output{orig, "DIGITS", 0, Lifetime::Timeframe}, digVecHW);
-    } else {
-      pc.outputs().snapshot(Output{orig, "DIGITS", 0, Lifetime::Timeframe}, digVec);
-    }
+    pc.outputs().snapshot(Output{orig, "DIGITS", 0, Lifetime::Timeframe}, digVec);
     pc.outputs().snapshot(Output{orig, "DIGITSROF", 0, Lifetime::Timeframe}, digROFVec);
   }
-  */
+ 
+  if (mDoCalibData) {
+    pc.outputs().snapshot(Output{orig, "GBTCALIB", 0, Lifetime::Timeframe}, calVec);
+  }
   if (mDoClusters) {                                                                  // we are not obliged to create vectors which are not requested, but other devices might not know the options of this one
     pc.outputs().snapshot(Output{orig, "COMPCLUSTERS", 0, Lifetime::Timeframe}, clusCompVec);
     pc.outputs().snapshot(Output{orig, "PATTERNS", 0, Lifetime::Timeframe}, clusPattVec);
@@ -161,7 +162,8 @@ void STFDecoder<Mapping>::run(ProcessingContext& pc)
     LOG(INFO) << mSelfName << " Built " << clusCompVec.size() << " clusters in " << clusROFVec.size() << " ROFs";
   }
   if (mDoDigits) {
-    LOG(INFO) << mSelfName << " Decoded " << digVec->get().size() << " Digits in " << digROFVec->get().size() << " ROFs";
+//    LOG(INFO) << mSelfName << " Decoded " << digVec->get().size() << " Digits in " << digROFVec->get().size() << " ROFs";
+    LOG(INFO) << mSelfName << " Decoded " << digVec.size() << " Digits in " << digROFVec.size() << " ROFs";
   }
 
   mTimer.Stop();
