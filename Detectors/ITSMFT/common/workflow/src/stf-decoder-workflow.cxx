@@ -54,15 +54,9 @@ WorkflowSpec defineDataProcessing(ConfigContext const& cfgc)
   o2::conf::ConfigurableParam::updateFromString(cfgc.options().get<std::string>("configKeyValues"));
 
   if (cfgc.options().get<bool>("runmft")) {
-<<<<<<< HEAD
-    wf.emplace_back(o2::itsmft::getSTFDecoderMFTSpec(doClusters, doPatterns, doDigits, doCalib, dict, noise));
-  } else {
-    wf.emplace_back(o2::itsmft::getSTFDecoderITSSpec(doClusters, doPatterns, doDigits, doCalib, dict, noise));
-=======
     wf.emplace_back(o2::itsmft::getSTFDecoderMFTSpec(doClusters, doPatterns, doDigits, doCalib, askSTFDist, dict, noise));
   } else {
     wf.emplace_back(o2::itsmft::getSTFDecoderITSSpec(doClusters, doPatterns, doDigits, doCalib, askSTFDist, dict, noise));
->>>>>>> 08d8c66075c287a77cd5c394ff3368c4fa6f50a9
   }
   return wf;
 }

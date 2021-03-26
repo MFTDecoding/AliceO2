@@ -23,6 +23,9 @@
 #pragma link C++ class o2::itsmft::GBTCalibData + ;
 #pragma link C++ class std::vector < o2::itsmft::GBTCalibData> + ;
 
+#pragma link C++ class o2::itsmft::GBTCalibData + ;
+#pragma link C++ class std::vector < o2::itsmft::GBTCalibData> + ;
+
 #pragma link C++ class o2::itsmft::ROFRecord + ;
 #pragma link C++ class std::vector < o2::itsmft::ROFRecord> + ;
 #pragma link C++ class o2::itsmft::MC2ROFRecord + ;
