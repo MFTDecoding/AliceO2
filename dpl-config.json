@@ -1,13 +1,17 @@
 {
     "internal-dpl-clock": "",
-    "raw-file-reader": "",
+    "raw-file-reader": {
+        "start-value-enumeration": "0",
+        "end-value-enumeration": "-1",
+        "step-value-enumeration": "1"
+    },
     "mft-stf-decoder": {
         "nthreads": "1",
         "old-format": "false",
         "decoder-verbosity": "1"
     },
-    "MFTDigitWriter": {
-        "outfile": "\/local\/home\/mc262512\/alice\/output\/data-2021_03_10__16_59_27__-20491-2.raw.root",
+    "MFTDigitWriter_dec": {
+        "outfile": "\/local\/home\/mc262512\/alice\/output\/data-d0-2021_03_04__17_26_26__-20491-0.raw.root",
         "treename": "o2sim",
         "treetitle": "Digits tree",
         "nevents": "-1",

@@ -7,25 +7,23 @@
 // In applying this license CERN does not waive the privileges and immunities
 // granted to it by virtue of its status as an Intergovernmental Organization
 // or submit itself to any jurisdiction.
+#ifndef O2_FRAMEWORK_ARROWSUPPORT_H_
+#define O2_FRAMEWORK_ARROWSUPPORT_H_
 
-/// @file   FT0DigitWriterSpec.h
+#include "Framework/ServiceSpec.h"
+#include "Framework/TypeIdHelpers.h"
 
-#ifndef O2_FT0DIGITWRITERDPL_H
-#define O2_FT0DIGITWRITERDPL_H
-
-#include "Framework/DataProcessorSpec.h"
-
-using namespace o2::framework;
-
-namespace o2
-{
-namespace ft0
+namespace o2::framework
 {
 
-/// create a processor spec
-framework::DataProcessorSpec getFT0DigitWriterDPLSpec();
+/// A few ServiceSpecs data sending backends
+struct ArrowSupport {
+  // Rate limiting service
+  static ServiceSpec rateLimitingSpec();
+  // Create spec for backend used to send Arrow messages
+  static ServiceSpec arrowBackendSpec();
+};
 
-} // namespace ft0
-} // namespace o2
+} // namespace o2::framework
 
-#endif /* O2_FT0DIGITWRITER_H */
+#endif // O2_FRAMEWORK_ARROWSUPPORT_H_
