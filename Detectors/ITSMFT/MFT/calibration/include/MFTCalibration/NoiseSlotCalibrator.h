@@ -19,6 +19,7 @@
 #include "DetectorsCalibration/TimeSlot.h"
 
 #include "DataFormatsITSMFT/CompCluster.h"
+#include "DataFormatsITSMFT/Digit.h"
 #include "DataFormatsITSMFT/NoiseMap.h"
 #include "gsl/span"
 
@@ -39,18 +40,18 @@ class NoiseSlotCalibrator : public o2::calibration::TimeSlotCalibration<o2::itsm
 
  public:
   NoiseSlotCalibrator() { setUpdateAtTheEndOfRunOnly(); }
-  NoiseSlotCalibrator(bool one, float prob)
+  NoiseSlotCalibrator(bool one, float prob, int hbpertf)
   {
     m1pix = one;
     mProbabilityThreshold = prob;
+    mHBFperTF = hbpertf;
     setUpdateAtTheEndOfRunOnly();
   }
   ~NoiseSlotCalibrator() final = default;
 
   void setThreshold(unsigned int t) { mThreshold = t; }
 
-  bool processTimeFrame(gsl::span<const o2::itsmft::CompClusterExt> const& clusters,
-                        gsl::span<const unsigned char> const& patterns,
+  bool processTimeFrame(gsl::span<const o2::itsmft::Digit> const& digits,
                         gsl::span<const o2::itsmft::ROFRecord> const& rofs);
 
   void finalize()
@@ -82,6 +83,7 @@ class NoiseSlotCalibrator : public o2::calibration::TimeSlotCalibration<o2::itsm
   unsigned int mThreshold = 100;
   unsigned int mNumberOfStrobes = 0;
   bool m1pix = true;
+  int mHBFperTF = 256;
 };
 
 } // namespace mft
