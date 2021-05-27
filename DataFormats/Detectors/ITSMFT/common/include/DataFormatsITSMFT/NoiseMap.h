@@ -129,6 +129,9 @@ class NoiseMap
     return false;
   }
 
+  const std::map<int, int>& getChipMap(int id) const { return mNoisyPixels[id]; }
+  void setChipMap(int id, std::map<int, int> chipmap) { mNoisyPixels[id]=chipmap; }
+
   // Methods required by the calibration framework
   void print();
   void fill(const gsl::span<const CompClusterExt> data);

@@ -11,6 +11,8 @@
 o2_add_library(MFTCalibration
                SOURCES src/NoiseCalibrator.cxx
          SOURCES src/NoiseCalibratorSpec.cxx
+	 SOURCES src/NoiseMapMergerSpec.cxx
+	 SOURCES src/PartialNoiseCalibratorSpec.cxx
          PUBLIC_LINK_LIBRARIES O2::DataFormatsMFT O2::MFTBase
                                      O2::DetectorsCalibration
                                      O2::CCDB)
@@ -22,6 +24,18 @@ o2_target_root_dictionary(MFTCalibration
 o2_add_executable(mft-calib-workflow
                   COMPONENT_NAME calibration
                   SOURCES testWorkflow/mft-calib-workflow.cxx
+                  PUBLIC_LINK_LIBRARIES O2::Framework
+      O2::MFTCalibration)
+
+o2_add_executable(mft-calib-merger-workflow
+                  COMPONENT_NAME calibration
+                  SOURCES testWorkflow/mft-calib-merger-workflow.cxx
+                  PUBLIC_LINK_LIBRARIES O2::Framework
+      O2::MFTCalibration)
+
+o2_add_executable(mft-partial-calib-workflow
+                  COMPONENT_NAME calibration
+                  SOURCES testWorkflow/mft-partial-calib-workflow.cxx
                   PUBLIC_LINK_LIBRARIES O2::Framework
       O2::MFTCalibration)
 
